@@ -75,3 +75,16 @@ function typeOf(object) {
   else if (object == null) { return 'null' }
   else { return typeof object }
 }
+
+function min(list, iterator, context) {
+  if (!iterator && typeOf(list) == 'array') return Math.min.apply(Math, list)
+  
+  var result = { computed : Infinity, value: Infinity }
+  
+  each(list, function(value, index, list) {
+    var computed = iterator ? iterator.call(context, value, index, list) : value
+    computed < result.computed && (result = { value : value, computed : computed })
+  })
+  
+  return result.value;
+}
