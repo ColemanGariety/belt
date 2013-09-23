@@ -1,4 +1,4 @@
-but why would anyone care if their utility library was semantic 
+but why would anyone care if their utility library were semantic 
 
 
 🌚
