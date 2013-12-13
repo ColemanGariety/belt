@@ -1,4 +1,9 @@
-exports.each = function each(iterator) {
+exports.add = function add(func) {
+	this[func.name] = func
+	return this
+}
+
+exports.add(function each(iterator) {
   if (Array.isArray(this)) {
     var i = this.length
     while (i--) {
@@ -9,18 +14,18 @@ exports.each = function each(iterator) {
       iterator(this.prop)
     }
   }
-}
+})
 
-exports.indexOf = function indexOf(value) {
+exports.add(function indexOf(value) {
   if (Array.indexOf) {
     return this.indexOf(value)
   } else {
     for (var i = 0; i < this.length; i++) if (this[i] == value) return i
     return -1
   }
-}
+})
 
-exports.filter = function filter(iterator) {
+exports.add(function filter(iterator) {
   if (Array.isArray(this)) {
     var collection = new Array()
     for (var i = 0; i < this.length; i++) iterator(this[i]) && collection.push(this[i])
@@ -30,11 +35,9 @@ exports.filter = function filter(iterator) {
   }
     
   return collection
-}
+})
 
-exports.reject = function reject(iterator) {
-  var newArray = new Array()
-
+exports.add(function reject(iterator) {
   if (Array.isArray(this)) {
     var collection = new Array()
     for (var i = 0; i < this.length; i++) !iterator(this[i]) && collection.push(this[i])
@@ -44,15 +47,15 @@ exports.reject = function reject(iterator) {
   }
     
   return collection
-}
+})
 
-exports.uniq = function uniq(array) {
-  var newArray = new Array()
-  for (var i = 0; i < array.length; i++) (indexOf(newArray, array[i]) == -1)  && newArray.push(array[i])
-  return newArray
-}
+exports.add(function uniq() {
+  var array = new Array()
+  for (var i = 0; i < this.length; i++) (indexOf(array, this[i]) == -1)  && array.push(this[i])
+  return array
+})
 
-exports.map = function map(iterator) {
+exports.add(function map(iterator) {
   if (Array.isArray(this)) {
     var collection = new Array()
     for (var i = 0; i < this.length; i++) collection.push(iterator(this[i]))
@@ -62,29 +65,31 @@ exports.map = function map(iterator) {
   }
     
   return collection
-}
+})
 
-exports.invoke = function invoke(methodName) {
+exports.add(function invoke(methodName) {
   return map(this, function(value) {
     return (typeof methodName == 'function' ? methodName : value[methodName]).apply(value)
   })
-}
+})
 
-exports.typeOf = function typeOf(object) {
-  if (object instanceof Array) { return 'array' }
-  else if (object == null) { return 'null' }
-  else { return typeof object }
-}
+exports.add(function typeOf(object) {
+	var object = object || this
+  if (object instanceof Array) return 'array'
+  else if (object === null) return 'null'
+  else if (object instanceof RegExp) return 'regexp'
+  else return typeof object
+})
 
-exports.contains = function contains(obj, target) {
+exports.add(function contains(obj, target) {
   if (obj == null) return false
   if (_.indexOf && obj.indexOf === _.indexOf) return obj.indexOf(target) != -1
   return _.any(obj, function(value) {
     return value === target
   })
-}
+})
 
-exports.any = function any(obj, iterator, context) {
+exports.add(function any(obj, iterator, context) {
   iterator || (iterator = _.identity)
   var result = false
   if (obj == null) return result
@@ -93,9 +98,9 @@ exports.any = function any(obj, iterator, context) {
     if (result || (result = iterator.call(context, value, index, list))) return breaker
   });
   return !!result
-}
+})
 
-exports.min = function min(list, iterator, context) {
+exports.add(function min(list, iterator, context) {
   if (!iterator && typeOf(list) == 'array') return Math.min.apply(Math, list)
   
   var result = { computed : Infinity, value: Infinity }
@@ -106,9 +111,9 @@ exports.min = function min(list, iterator, context) {
   })
   
   return result.value;
-}
+})
 
-exports.without = function without(array, values) {
+exports.add(function without(array, values) {
   rest = Array.prototype.concat.call(Array.prototype, Array.prototype.slice.call(arguments, 1))
   return _.filter(array, function(value) { return !_.contains(rest, value) })
-}
+})

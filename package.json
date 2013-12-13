@@ -1,0 +1,7 @@
+{
+	"name": "belt"
+, "version": "0.0.1"
+, "description": "A utility library with unparalleled code cleanliness."
+, "author": "Jackson Gariety"
+, "main": "belt.js"
+}
